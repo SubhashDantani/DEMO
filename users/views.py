@@ -20,20 +20,23 @@ def login(request):
         except CustomUser.DoesNotExist:
             messages.error(request, 'User does not exist.')
     return render(request, 'login.html')
-
+from django.contrib.auth.hashers import make_password
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        print("999999999",email)
         try:
             user = CustomUser.objects.get(email=email)
+            print("999999999",user)
+
             if user:
                 characters =  string.digits 
                 OTP = ''.join(random.choice(characters) for i in range(6))
                 request.session['otp']=OTP
                 request.session['email']=email
                 send_mail(
-                    'OTP Reset Password mail from Questmart',
-                    f'Dear {user.username},\nNow Your New Password is:  {OTP}',
+                    'OTP  mail from Bidding System',
+                    f'Dear {user.username},\n OTP is:  {OTP}',
                     'akshaydantani96@gmail.com',  # TODO: Update this with your email id
                     [email],  # TODO: Update this with the recipient's email id
                     fail_silently=False,
@@ -63,7 +66,7 @@ def setpassword(request):
 
         if request.method == 'POST':
             new_password = request.POST.get('password')
-            user.set_password(new_password)
+            user.password=make_password(new_password)
             user.save()             
             messages.success(request, 'New Password Set Sucessfully.')
             del request.session['email']

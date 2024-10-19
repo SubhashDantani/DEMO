@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block contennt %}
 {% load static %}
+
+{% block content %}
 
   <div class="Login">
     <div class="container">
@@ -9,21 +10,23 @@
           <div class="LoginModal">
               <div class="row g-0 align-items-center">
                             <div class="col-md-6">
-                                <div class="ImgBox"><img src="img/login.jpg" class="img-fluid" alt="Login"></div>
+                                <div class="ImgBox"><img src="{% static "img/login.jpg" %} " class="img-fluid" alt="Login"></div>
                             </div>
                             <div class="col-md-6">
                                 
-                                    <form>
+                              <form method="post">
+                                {% csrf_token %}
                                         <div class="form-group row">
                                             <h4>Forgot Password</h4>
                                             <div class="col-12">
-                                                <input type="text" id="Email" name="Email" class="form-control" placeholder="Email Id">
+                                                <input type="text" id="Email" name="email" class="form-control" placeholder="Email Id">
                                             </div>
                                             <div class="col-12">
-                                                <a href="OTP.html" class="LoginBtn">Forgot Password</a>
+                                              <input id="btnlogin" type="submit" class="LoginBtn" value="Submit">
+                                               
                                             </div>
                                              <div class="col-12">
-                                                <small class="text-center">Already have account? <a href="Login.html">Login</a></small>
+                                                <small class="text-center">Already have account? <a href="{% url "users:login" %}">Login</a></small>
                                             </div>
                                         </div>
                                     </form>
@@ -37,4 +40,4 @@
     </div>
   </div>
  
-  {% endblock contennt %}
+  {% endblock  %}
