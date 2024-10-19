@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block content %}
+ <style>
+    .dashboard-section {
+        margin-top: 20px;
+    }
+    .card-header {
+        background-color: #f8f9fa;
+    }
+    .table thead th {
+        background-color: #e9ecef;
+    }
+</style>
+
+<div class="UserDashboard py-5">
+    <div class="container">
+<h1 class="Title">User Dashboard</h1>
+
+<!-- Nav pills -->
+        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="pills-active-bids-tab" data-bs-toggle="pill" href="#pills-active-bids" role="tab" aria-controls="pills-active-bids" aria-selected="true">Active Bids</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="pills-bidding-history-tab" data-bs-toggle="pill" href="#pills-bidding-history" role="tab" aria-controls="pills-bidding-history" aria-selected="false">Bidding History</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="pills-profile-info-tab" data-bs-toggle="pill" href="#pills-profile-info" role="tab" aria-controls="pills-profile-info" aria-selected="false">Profile Information</a>
+    </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content" id="pills-tabContent">
+    <!-- Active Bids Tab -->
+    <div class="tab-pane fade show active" id="pills-active-bids" role="tabpanel" aria-labelledby="pills-active-bids-tab">
+        <div class="dashboard-section">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Bid ID</th>
+                                <th>Item/Project Name</th>
+                                <th>Status</th>
+                                <th>Bid Amount</th>
+                                <th>Bid current_price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          
+    
+                            {% for bid in active_bids %}
+                            <tr>
+                                <td>{{ bid.id }}</td>
+                                <td>{{ bid.product.name }}</td>
+                                <td> In Progress</td>
+                                <td>${{ bid.bid_amount }}</td>
+                                <td>{{ bid.product.current_price }}</td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm" href="{% url 'bids:product_detail' bid.product.id %}">Modify</a>
+                                    
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" style="text-align:center;">No active bids.</td></tr>
+                            {% endfor %}
+                          
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bidding History Tab -->
+    <div class="tab-pane fade" id="pills-bidding-history" role="tabpanel" aria-labelledby="pills-bidding-history-tab">
+        <div class="dashboard-section">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item/Project Name</th>
+                                <th>Bid Amount</th>
+                                <th>Outcome</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bid in past_bids %}                          
+                            <tr>
+                                <td>{{bid.bid_time}}</td>
+                                <td>{{bid.user.pk}} {{request.session.user_id}}{{ bid.product.name }}</td>
+                                <td>${{ bid.bid_amount }}</td>
+                                <td>
+                                    {% if bid.user.pk == request.session.user_id and bid.payment_completed %}
+
+                                    Won
+                                    {% else %}-{% endif %}
+                                    </td>
+                                <td>Completed</td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" href="{% url 'bids:product_detail' bid.product.id %}">View Details</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" style="text-align:center;"> No past bids.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Information Tab -->
+    <div class="tab-pane fade" id="pills-profile-info" role="tabpanel" aria-labelledby="pills-profile-info-tab">
+        <div class="dashboard-section">
+            <div class="card">
+                <div class="card-body p-3">
+                    <form id="profile-form" method="post" enctype="multipart/form-data" class="form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="image">Profile Image:</label><br>
+                            {% if user.image %}
+                            <img src="{{ user.image.url }}" alt="Profile Image" class="profile-image"><br>
+                            {% endif %}
+                            <input type="file" id="image" name="image"  class="form-control" style="display:none;">
+                        </div>
+                        <div class="row g-3">
+                             <div class="col-xl-4">
+                                <label for="image">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" disabled> 
+                        </div>
+                        <div class="col-xl-4">   
+                            <label for="image">Email:</label>                                 
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" disabled>
+                        </div>
+                        <div class="col-xl-4">
+                            <label for="image">Contact No:</label>                                 
+                            <input type="tel" class="form-control" id="contact" name="contact" pattern="\d{10}" title="Please enter a 10-digit phone number." 
+                            value="{{ user.contact }}" disabled>
+                        </div>
+                        <button type="button" id="edit-button"  class="mt-3 AddToCart" onclick="enableEditing()">Edit Profile</button>&nbsp;
+                        <button type="submit" id="save-button"  class="mt-3 AddToCart" style="display:none;">Save Profile</button>&nbsp;
+                        <a href="{% url 'bids:change_password' %}"  class="mt-3 AddToCart" 
+                            style="text-align:center">Change Password</a>
+                        </div>
+                
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</div> 
+
+{% comment %} 
+<h1>Your Dashboard</h1>
+
+<h2>Active Bids</h2>
+<table border='1' style="margin-left: auto; margin-right: auto; width: 80%;">
+    <tr>
+        <th>Product</th>
+        <th>My Last Bid Amount</th>
+        <th>Current Highest</th>
+        <th>Action</th>
+    </tr>
+    {% for bid in active_bids %}
+    <tr style="text-align:center;">
+        <td>{{ bid.product.name }}</td>
+        <td>{{ bid.bid_amount }}</td>
+        <td>{{ bid.product.current_price }}</td>
+        <td><a href="{% url 'bids:product_detail' bid.product.id %}" class="view-details-link">Show Product</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4" style="text-align:center;">No active bids.</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Bidding History</h2>
+<table border='1' style="margin-left: auto; margin-right: auto; width: 80%;">
+    <tr>
+        <th>Product</th>
+        <th>My Last Bid Amount</th>
+        <th>Auction End Time</th>
+        <th>Action</th>
+    </tr>
+    {% for bid in past_bids %}
+    <tr style="text-align:center;">
+        <td>{{ bid.product.name }}</td>
+        <td>{{ bid.bid_amount }}</td>
+        <td>{{ bid.product.auction_end_time }}</td>
+        <td><a href="{% url 'bids:product_detail' bid.product.id %}" class="view-details-link">Show Product</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4" style="text-align:center;"> No past bids.</td></tr>
+    {% endfor %}
+</table>  {% endcomment %}
+<script>
+    function enableEditing() {
+        document.getElementById('username').disabled = false;
+        document.getElementById('email').disabled = false;
+        document.getElementById('contact').disabled = false;
+        document.getElementById('image').style.display = 'block';
+        document.getElementById('edit-button').style.display = 'none';
+        document.getElementById('save-button').style.display = 'inline';
+    }
+</script> 
+{% endblock %}

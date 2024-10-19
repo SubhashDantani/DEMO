@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="Banner">
+    <div class="BannerContent">
+        <h1>Discover the best products at amazing prices</h1>
+    </div>
+</div>
+{% comment %} <h1>Product Listings</h1>
+<div id="product-search-container">
+    <form id="product-search-form" method="get">
+        <input type="text" name="search" placeholder="Search products" value="{{ request.GET.search }}" id="product-search-input">
+        <select name="sort_by" id="product-sort-dropdown">
+            <option value="name">Name</option>
+            <option value="current_price_lh">Price(Low to High)</option>
+            <option value="current_price_hl">Price(High to Low)</option>
+            <option value="auction_end_time">End Time</option>
+            <option value="popularity">Popularity</option>
+        </select>
+        <button type="submit" id="product-search-button">Search</button>
+    </form>
+</div> {% endcomment %}
+
+{% comment %} <ul id="product-list">
+    {% for product in products %}
+    <li class="product-item">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="Product Image" class="product-image"><br>
+        {% endif %}
+        <h3 class="product-name">{{ product.name }}</h3>
+        <p class="product-description">{{ product.description|truncatewords:20 }}</p>
+        <p class="product-price">Starting From: {{ product.starting_price }}</p>
+        <p><a href="{% url 'bids:product_detail' product.id %}" class="view-details-link">View Details</a></p>
+    </li>
+    {% empty %}
+    <p>No products found.</p>
+    {% endfor %}
+</ul> {% endcomment %}
+
+
+
+
+<div class="ProductList">
+    <div class="container py-5">
+        <h2 class="Title text-center">Products</h2>
+        <div class="row g-3">
+            <div id="product-search-container">
+                <form id="product-search-form" method="get">
+                    <input type="text" name="search" placeholder="Search products" value="{{ request.GET.search }}" id="product-search-input">
+                    <select name="sort_by" id="product-sort-dropdown">
+                        <option value="name">Name</option>
+                        <option value="current_price_lh">Price(Low to High)</option>
+                        <option value="current_price_hl">Price(High to Low)</option>
+                        <option value="auction_end_time">End Time</option>
+                        <option value="popularity">Popularity</option>
+                    </select>
+                    <button type="submit" id="product-search-button">Search</button>
+                </form>
+            </div>
+            {% for product in products %}
+            <div class="col-xl-3 col-lg-4 col-sm-6">
+                <div class="CardBox">
+                    <a href="{% url 'bids:product_detail' product.id %}">
+                        {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="Product 3" />
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title small">{{ product.name }}</h5> <!-- Make title smaller -->
+                        <p class="card-text small">${{ product.starting_price }}</p> <!-- Make price text smaller -->
+                        
+                        <!-- Heart icon on a separate line -->
+                        <div class="heart-icon">
+                            <a href="javascript:void(0)" ><i class="fa fa-heart"></i></a>
+                        </div>
+                        
+                        <!-- Other links on the same line -->
+                        <div class="action-links d-inline-flex justify-content-center mt-2">
+                            <a href="javascript:void(0)" class="AddToCart me-2 small">Add to Cart</a>
+                            <a href="{% url 'bids:product_detail' product.id %}" class="AddToCart btn-sm">View Details</a>
+                        </div>
+                    </div>
+                    
+                    
+                   
+                </div>
+        </div>
+        {% empty %}
+    <p>No products found.</p>
+    {% endfor %}
+          
+        </div>
+    </div>
+</div>
+{% endblock %}

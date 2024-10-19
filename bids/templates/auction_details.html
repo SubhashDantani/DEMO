@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .auction-details-section {
+        margin-top: 20px;
+    }
+    .card-header {
+        background-color: #f8f9fa;
+    }
+    .contact-info p {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="auction-details-section py-5">
+    <div class="container">
+        <h1 class="Title">Auction Details</h1>
+
+        <!-- Auction Rules Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="card-title">Auction Rules</h4>
+            </div>
+            <div class="card-body">
+                <p>Please read the following rules carefully before participating in any auctions:</p>
+                <ul>
+                    <li>Participants must register before placing bids.</li>
+                    <li>Bids must be placed in whole amounts and must be higher than the previous bid.</li>
+                    <li>Each auction has a set end time; bids placed after the end time are not considered.</li>
+                    <li>Winning bids are subject to payment within 24 hours of the auction closing.</li>
+                    <li>All items are sold as-is. No returns or exchanges are accepted.</li>
+                    <li>Disputes will be resolved based on the auction platform's terms and conditions.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Contact Information Section -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Contact Information</h4>
+            </div>
+            <div class="card-body contact-info">
+                <p>If you have any questions or need assistance, please contact us:</p>
+                <p><strong>Email:</strong> support@myshop.com</p>
+                <p><strong>Phone:</strong> +1 (800) 123-4567</p>
+                <p><strong>Address:</strong> 123 Auction St, Bid City, BC 12345</p>
+                <p><strong>Business Hours:</strong> Mon - Fri, 9 AM - 5 PM EST</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

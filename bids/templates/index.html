@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="Banner">
+    <div class="BannerContent">
+        <h1>Welcome to MyShop</h1>
+    <p>Discover the best products at amazing prices</p>
+    <a href="Product.html" class="ShopNow">Shop Now</a>
+    </div>
+</div>
+
+
+<div class="Info py-5">
+    <div class="container">
+        <div class="row">
+            <h2 class="Title text-center">About</h2>
+            <div class="col-12">
+                <p class="text-center">
+                   Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                   tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                   quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                   consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                   cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                   proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+                <p class="text-center">
+                   Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                   tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                   quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                   consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                   cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                   proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Showcase -->
+<div class="ProductList">
+    <div class="container py-5">
+    <h2 class="Title text-center">Our Products</h2>
+    <div class="row g-3">
+        
+        {% for product in products %}
+                <div class="col-xl-3 col-lg-4 col-sm-6">
+                    <div class="CardBox">
+                        <a href="{% url 'bids:product_detail' product.id %}">
+                            {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="Product 3" />
+                        {% endif %}
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">${{ product.starting_price }}</p>
+                            <a href="javascript:void(0)"><i class="fa fa-heart"></i></a>
+                            <a href="javascript:void(0)" class="AddToCart">Add to Cart</a>
+                        </div>
+                        </a>
+                    </div>
+            </div>
+            {% empty %}
+        <p>No products found.</p>
+        {% endfor %}
+</div>
+</div>
+
+{% endblock %}

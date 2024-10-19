@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card text-center" >
+    <div class="card-header">
+        Payment Failed
+      </div>
+    <div class="card-body">
+      <p class="card-text">Sorry, your payment was not successful. Please try again.</p>
+<a href="{% url 'bids:product_list' %}" class="btn btn-primary">Go back</a>
+
+    </div>
+  </div>
+
+{% endblock %}

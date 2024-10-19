@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="card text-center" >
+    <div class="card-header">
+        Payment Successful
+      </div>
+    <div class="card-body">
+      <p class="card-text">Thank you for your payment. Your transaction was successful!.</p>
+<a href="{% url 'bids:product_list' %}" class="btn btn-primary">Back to Products</a>
+
+    </div>
+  </div>
+
+{% endblock %}

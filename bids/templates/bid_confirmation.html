@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .confirmation-section {
+        margin-top: 20px;
+    }
+    .card-header {
+        background-color: #f8f9fa;
+    }
+    .table thead th {
+        background-color: #e9ecef;
+    }
+    .btn {
+        margin: 5px;
+    }
+</style>
+<div class="confirmation-section py-5">
+    <div class="container">
+        <h1 class="Title">Bid Confirmation</h1>
+
+        <!-- Bid Summary Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="card-title">Bid Summary</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Bid ID</th>
+                            <th>Item Name</th>
+                            <th>My Last Bid Amount</th>
+                            <th>Auction End Time</th>
+                            <th>Current Bid Amount</th>
+                            <th>Auction Status</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bid in bids %}
+        <tr style="text-align:center;">
+            <td>{{ bid.id }}</td>
+            <td>{{ bid.product.name }}</td>
+            <td>{{ bid.bid_amount }}</td>
+            <td>{{ bid.product.auction_end_time }}</td>
+            <td>{{ bid.product.current_price }}</td>
+            <td>
+                {% if now > bid.product.auction_end_time %}
+                    Ended
+                {% else %}
+                    Running
+                {% endif %}
+            </td>
+            <td>
+                {% if now > bid.product.auction_end_time %}
+                    {% if bid.product.current_price == bid.bid_amount %}
+                        {% if bid.payment and bid.payment.status == 'Completed' %}
+                            <p>Payment Completed</p>
+                        {% elif bid.payment_due_expired %}
+                            <p>You did not complete the payment in time (within 48 hours). Ownership was revoked.</p>
+                        {% else %}
+                            <p>You are the highest bidder! Please complete payment within 48 hours.</p>
+                            <p><a href="{% url 'payment:initiate_payment' bid.id %}" class="btn btn-primary">Click Here For Payment</a></p>
+                        {% endif %}
+                    {% else %}
+                        <p>Auction ended, but you didn't win the bid.</p>
+                    {% endif %}
+                {% else %}
+                    <p>The auction is still running.</p>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;">No bids found.</td></tr>
+        {% endfor %}                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Options Section -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Payment Options</h4>
+            </div>
+            <div class="card-body">
+                <p>Please choose your payment method to deposit funds or pay for the won bid:</p>
+                <div class="mb-3">
+                    <button class="btn btn-primary">Credit/Debit Card</button>
+                    <button class="btn btn-success">PayPal</button>
+                    <button class="btn btn-secondary">Bank Transfer</button>
+                </div>
+                <p>If you have any questions, please contact our support team.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% comment %} <h1>Your Bid Confirmations</h1><br>
+<div id="product-search-container">
+    <form id="product-search-form" method="get">
+        <input type="text" name="search" placeholder="Search products" value="{{ request.GET.search }}" id="product-search-input">        
+        <button type="submit" id="product-search-button">Search</button>
+    </form>
+</div>
+<br>
+<table border='1' style="margin-left: auto; margin-right: auto; width: 80%;">
+    <thead>
+        <tr style="text-align:center;">
+            <th>Product</th>
+            <th>My Last Bid Amount</th>
+            <th>Auction End Time</th>
+            <th>Current Price</th>
+            <th>Auction Status</th>
+            <th>Payment</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table> {% endcomment %}
+{% endblock %}

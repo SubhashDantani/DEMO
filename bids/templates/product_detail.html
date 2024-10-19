@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="main">
+    <!-- Cart Section -->
+   
+    <!-- Wrapper Section -->
+    <section class="section wrapper wrapper-section">
+        <div class="container wrapper-column">
+            <div class="wrapper-bgimage">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="Product Image" class="product-image">
+                {% endif %}
+                
+                {% if product.video %}
+                    <video width="320" height="240" controls>
+                        <source src="{{ product.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+            </div>
+
+            <div class="wrapper-content">
+                <div class="wrapper-inform">
+                    <span class="badge badge-darken">{{ product.name }}</span>
+                    <p class="text-base font-normal">
+                        {{ product.description }}
+                    </p>
+                </div>
+                
+                <div class="wrapper-detail">
+                    <div class="price">
+                        <span class="text-base font-medium">Starting Price: {{ product.starting_price }}</span>
+                        <span class="text-base font-medium">Current Price: {{ product.current_price }}</span>
+                        <span class="text-base font-medium" style="text-align:center;">Auction End Time: {{ auction_end_time|date:"Y-m-d H:i:s" }}</span>
+                        <span class="text-base font-medium" style="text-align:center;" id="countdown"></span>
+                    </div>
+                </div>
+                
+                <div class="wrapper-action">
+                    {% if request.session.user_id %}
+                        <form method="post" class="form-bid" style="text-align:center;">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="number" step="0.01" name="bid_amount" class="form-control" placeholder="Enter your bid" required>
+                            </div>
+                            <div class="form-group form-actions">
+                                <button type="submit" class="btn btn-darken">Place Bid</button>
+                          
+                            </div>
+                        </form>
+                    {% else %}
+                        <p><a href="{% url 'users:login' %}" class="login-link">Login</a> to place a bid.</p>
+                    {% endif %}
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <h3>Bidding History:</h3>
+    <ul>
+        {% for bid in bids %}
+            <li style="text-transform:capitalize;list-style-type:none;">{{ bid.user.username }}: {{ bid.bid_amount }} ({{ bid.bid_time }})</li>
+        {% empty %}
+            <li style="list-style-type:none;margin-left:100px;">No bids yet.</li>
+        {% endfor %}
+    </ul>
+</main>
+
+{% comment %}
+<!-- This is a commented-out section for reference -->
+{% endcomment %}
+
+<!-- Countdown Timer Script -->
+<script>
+    console.log("Auction End Time:", "{{ auction_end_time }}");
+    
+    const auctionEndTime = new Date("{{ auction_end_time }}").getTime();
+    const countdownElement = document.getElementById('countdown');
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = auctionEndTime - now;
+
+        if (timeLeft <= 0) {
+            countdownElement.innerHTML = "Auction Ended";
+            clearInterval(timerInterval); 
+        } else {
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        }
+    }
+
+    const timerInterval = setInterval(updateCountdown, 1000);
+</script>
+
+<!-- Navbar Menu Script -->
+<script type="text/javascript">
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+            if (navbarMenu.classList.contains("is-active")) {
+                navbarMenu.classList.remove("is-active");
+                bgOverlay.classList.remove("is-active");
+            }
+        }
+    });
+</script>
+{% endblock %}

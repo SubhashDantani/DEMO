@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="container profile-container">
+    <h1>Profile</h1>
+    <form id="profile-form" method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="image">Profile Image:</label><br>
+            {% if user.image %}
+            <img src="{{ user.image.url }}" alt="Profile Image" class="profile-image"><br>
+            {% endif %}
+            <input type="file" id="image" name="image" style="display:none;">
+        </div>
+
+        <div class="form-group">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" value="{{ user.username }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" value="{{ user.email }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="contact">Contact:</label><br>
+            <input type="tel" id="contact" name="contact" pattern="\d{10}" title="Please enter a 10-digit phone number." 
+                   value="{{ user.contact }}" disabled>
+        </div>
+
+        <button type="button" id="edit-button" class="btn btn-primary" onclick="enableEditing()">Edit Profile</button>&nbsp;
+        <button type="submit" id="save-button" class="btn btn-primary" style="display:none;">Save Profile</button>&nbsp;
+        <a href="{% url 'bids:change_password' %}" class="btn btn-primary" 
+            style="text-decoration:none;color:black;text-align:center">Change Password</a>
+    </form>
+</div>
+<script>
+    function enableEditing() {
+        document.getElementById('username').disabled = false;
+        document.getElementById('email').disabled = false;
+        document.getElementById('contact').disabled = false;
+        document.getElementById('image').style.display = 'block';
+        document.getElementById('edit-button').style.display = 'none';
+        document.getElementById('save-button').style.display = 'inline';
+    }
+</script>    
+<br>
+{% endblock %}
